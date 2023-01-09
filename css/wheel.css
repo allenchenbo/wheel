@@ -68,6 +68,10 @@ body {
 .blue-button {
     background: #39b5e0;
 }
+.button:disabled {
+    cursor: not-allowed;
+    background: #bcbcbc;
+}
 /* .records ul li:nth-child(2) {
     background: #fff;
     text-align: center;

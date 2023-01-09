@@ -1,0 +1,60 @@
+{
+    "Base Icon Template": {
+        "prefix": "svg-icon",
+        "body": [
+            "import React from 'react';",
+            "import SvgIcon from '../SvgIcon';",
+            "import useForkRef from '../../../util/hook/useForkRef';",
+            "",
+            "const ${TM_FILENAME_BASE} = React.forwardRef((props, ref) => {",
+            "    const { className, ...others } = props;",
+            "    const handleRef = React.useRef(null);",
+            "    const svgRef = useForkRef(handleRef, ref);",
+            "    const defaultProperty = {",
+            "        className,",
+            "        ref: svgRef,",
+            "        ...others,",
+            "    };",
+            "    return (",
+            "        <SvgIcon {...defaultProperty}>",
+            "            <path d=\"$1\" />",
+            "        </SvgIcon>",
+            "    );",
+            "});",
+            "",
+            "export default ${TM_FILENAME_BASE};",
+            ""
+        ],
+        "description": "Base Icon Template"
+    },
+    "React Template": {
+        "prefix": "react-base",
+        "body": [
+            "import React from 'react';",
+            "",
+            "const ${TM_FILENAME_BASE} = React.forwardRef((props, ref) => {",
+            "    return <div>$1</div>;",
+            "});",
+            "",
+            "export default ${TM_FILENAME_BASE};",
+            ""
+        ],
+        "description": "React Template"
+    },
+    "React setNameRef": {
+        "prefix": "react-setNameRef",
+        "body": [
+            "const setNameRef = (el) => {",
+            "    if (el && el.getName) $1.current[el.getName()] = el;",
+            "};"
+        ],
+        "description": "React set group useRef"
+    },
+    "React Ignore disablen ext line": {
+        "prefix": "ignore-extLine",
+        "body": [
+            "// eslint-disable-next-line",
+        ],
+        "description": "Ignore dependencies"
+    }
+}
