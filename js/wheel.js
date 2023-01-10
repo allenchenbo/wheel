@@ -15,8 +15,8 @@ const lotteryMap = {
     },
     blue: {
         startNum: 56,
-        endNum: 60,
-        groups: [1, 2, 2],
+        endNum: 59,
+        groups: [1, 2, 1],
         color: '#39B5E0',
         title: '藍色轉盤轉轉轉',
     },
