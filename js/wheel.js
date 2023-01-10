@@ -86,7 +86,7 @@ const removeSelectedLottery = () => {
 const lotteryNum = (startNum, endNum) => {
     let lotteries = [];
     for (let i = startNum; i <= endNum; i++) {
-        lotteries.push(i);
+        lotteries.push(String(i).padStart(2, '0'));
     }
     return lotteries;
 };
@@ -97,10 +97,10 @@ const setTitle = (title) => {
 };
 
 const setWheel = (eventName) => {
-    // window.onbeforeunload = function (event) {
-    //     let e = window.event || event;
-    //     e.returnValue = '確定要關閉視窗？？';
-    // };
+    window.onbeforeunload = function (event) {
+        let e = window.event || event;
+        e.returnValue = '確定要關閉視窗？？';
+    };
     const { startNum, endNum, groups, color, title } = lotteryMap[eventName];
     const spinButton = document.querySelector('#spin-button');
     wheel.venues = lotteryNum(startNum, endNum);
