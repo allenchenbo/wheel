@@ -1,3 +1,9 @@
+:root {
+    --gold: #ffe15d;
+    --red: #dc3535;
+    --blue: #39b5e0;
+}
+
 * {
     padding: 0;
     margin: 0;
@@ -9,39 +15,93 @@ body {
     height: 100vh;
     background-color: #f0f0f0;
 }
+.px-2 {
+    padding: 0 12px;
+}
 .container {
-    /* height: 800px; */
+}
+
+.wrap {
+    display: flex;
 }
 
 .wheel-box {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
-    /* height: 800px; */
+    margin: 26px 0 0 32px;
+    width: 760px;
 }
-.stats {
-    position: absolute;
+
+.records-box {
     padding: 20px;
-    left: 0;
-    top: 0;
+    font-size: 30px;
+    font-weight: 600;
+    flex-grow: 1;
 }
-.records {
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+
+.records-box .record {
+    width: 880px;
+    /* border: 1px solid #aeaeae; */
+    border-radius: 46px;
+    overflow: hidden;
+}
+
+.records-box .record + .record {
+    margin-top: 24px;
+}
+
+.records-box h2 {
     font-size: 32px;
-}
-
-.records ul {
-    display: flex;
-}
-
-.records ul li {
     text-align: center;
-    font-weight: 500;
-    width: 60px;
+    border-bottom: 1px solid #f8edeb;
+    background: #dad7cd;
+    cursor: pointer;
+}
+
+.records-box ul {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 18px 34px;
+    background: #fff;
+}
+
+.chess {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 4.5rem;
+    -webkit-box-shadow: 0.01rem 0.01rem 0.1rem rgba(0, 0, 0, 0.5),
+        0 0 0.05rem rgba(240, 240, 240, 0.5),
+        0.05rem 0.05rem 0.01rem rgba(255, 255, 255, 0.15) inset,
+        0.1rem 0.1rem 0.1rem rgba(255, 255, 255, 0.05) inset,
+        -0.05rem -0.05rem 0.25rem rgba(0, 0, 0, 0.15) inset,
+        -0.1rem -0.1rem 0.35rem rgba(0, 0, 0, 0.05) inset;
+    box-shadow: 0.01rem 0.01rem 0.1rem rgba(0, 0, 0, 0.5), 0 0 0.05rem rgba(240, 240, 240, 0.5),
+        0.05rem 0.05rem 0.01rem rgba(255, 255, 255, 0.15) inset,
+        0.1rem 0.1rem 0.1rem rgba(255, 255, 255, 0.05) inset,
+        -0.05rem -0.05rem 0.25rem rgba(0, 0, 0, 0.15) inset,
+        -0.1rem -0.1rem 0.35rem rgba(0, 0, 0, 0.05) inset;
+}
+
+.chess-gold {
+    background: var(--gold);
+}
+
+.chess-red {
+    background: var(--red);
+}
+
+.chess-blue {
+    background: var(--blue);
+}
+
+.records {
+    width: 40%;
 }
 
 /* Button set */
@@ -60,13 +120,13 @@ body {
     border-style: none;
 }
 .gold-button {
-    background: #ffe15d;
+    background: var(--gold);
 }
 .red-button {
-    background: #dc3535;
+    background: var(--red);
 }
 .blue-button {
-    background: #39b5e0;
+    background: var(--blue);
 }
 .button:disabled {
     cursor: not-allowed;

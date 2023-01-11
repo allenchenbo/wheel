@@ -15,8 +15,8 @@ const lotteryMap = {
     },
     blue: {
         startNum: 56,
-        endNum: 60,
-        groups: [1, 2, 2],
+        endNum: 59,
+        groups: [1, 2, 1],
         color: '#39B5E0',
         title: '藍色轉盤轉轉轉',
     },
@@ -48,28 +48,30 @@ Number.prototype.mod = function (n) {
 };
 
 // 顯示結果在畫面
-const viewRecords = (records, groups) => {
-    let divCont = '';
-    let count = 0;
-    const pack = groups.reduce((acc, cur) => {
-        const newAcc = _.slice(records, count, count + cur);
-        acc.push(newAcc);
-        count = count + cur;
-        return acc;
-    }, []);
-    for (let i = 0; i < pack.length; i++) {
-        const curAry = pack[i];
-        if (curAry.length === 0) break;
-        const ulDom = document.createElement('ul');
-        $.each(curAry, function (key, item) {
-            const liDom = document.createElement('li');
-            liDom.style.backgroundColor = wheel.numColor;
-            liDom.innerHTML = item;
-            ulDom.append(liDom);
+const viewRecords = (currentLottery, groupsIdx, colorType) => {
+    let fragment;
+    let recordDOMString = wheel.recordDOMString;
+    let recordLiString = wheel.recordLiDOMString;
+    recordLiString = recordLiString.replaceAll('*LOTTERY*', currentLottery);
+    recordLiString = recordLiString.replaceAll('*COLOR*', colorType);
+    if ($('.record').length === 0 || $('.record').length !== groupsIdx) {
+        // create recordDOMString
+        recordDOMString = recordDOMString.replaceAll('*TIMES*', groupsIdx);
+        recordDOMString = recordDOMString.replaceAll('*LI*', recordLiString);
+        fragment = $.parseHTML(recordDOMString);
+        wheel.recordsBoxDOM.append(fragment);
+        Array.apply(null, document.querySelectorAll('.records-box h2')).map((t) => {
+            $(t).off('click');
+            $(t).click(function () {
+                $(t).parent().find('ul').toggle(400);
+            });
         });
-        divCont += ulDom.outerHTML;
+    } else {
+        // get recordDOM
+        fragment = new DocumentFragment();
+        fragment.append($.parseHTML(recordLiString)[0]);
+        document.querySelectorAll('.record ul')[groupsIdx - 1].appendChild(fragment);
     }
-    $('.records').html(divCont);
 };
 
 // 移除選中的項目
@@ -97,16 +99,17 @@ const setTitle = (title) => {
 };
 
 const setWheel = (eventName) => {
-    window.onbeforeunload = function (event) {
-        let e = window.event || event;
-        e.returnValue = '確定要關閉視窗？？';
-    };
+    // window.onbeforeunload = function (event) {
+    //     let e = window.event || event;
+    //     e.returnValue = '確定要關閉視窗？？';
+    // };
     const { startNum, endNum, groups, color, title } = lotteryMap[eventName];
     const spinButton = document.querySelector('#spin-button');
     wheel.venues = lotteryNum(startNum, endNum);
     wheel.title = title;
     wheel.groups = groups;
     wheel.numColor = color;
+    wheel.colorType = eventName;
     $('.switch-button').css('display', 'none');
     $('.wheel-box').css('display', '');
     spinButton.classList.add(`${eventName}-button`);
@@ -116,20 +119,24 @@ const setWheel = (eventName) => {
 
 // WHEEL!
 var wheel = {
-    canvasDom: null,
+    canvasDOM: null,
     isInit: true,
     currentSegments: null,
     timerHandle: 0,
     timerDelay: 33,
 
     numColor: '',
+    colorType: '',
     venues: [],
     title: '',
     groups: [],
     parts: 0,
     counts: 0,
-    // counts: 0,
-    // maxCounts: 11,
+
+    //dom
+    recordsBoxDOM: '',
+    recordDOMString: 'template-record',
+    recordLiDOMString: 'template-record-li',
 
     angleCurrent: 0,
     angleDelta: 0,
@@ -150,6 +157,7 @@ var wheel = {
         '#577590',
         '#277DA1',
     ],
+
     // 目前所有數量
     segments: [],
     seg_colors: [],
@@ -175,7 +183,8 @@ var wheel = {
         // Start the wheel only if it's not already spinning
         if (wheel.timerHandle == 0) {
             wheel.spinStart = new Date().getTime();
-            wheel.maxSpeed = Math.PI / (Math.floor(wheel.segments.length / 3) + Math.random()); // Randomly vary how hard the spin is
+            // wheel.maxSpeed = Math.PI / (Math.floor(wheel.segments.length / 3) + Math.random()); // Randomly vary how hard the spin is
+            wheel.maxSpeed = Math.PI / (Math.floor(wheel.segments.length / 3) + 2 + Math.random()); // Randomly vary how hard the spin is
             wheel.frames = 0;
             wheel.timerHandle = setInterval(wheel.onTimerTick, wheel.timerDelay);
         }
@@ -217,7 +226,7 @@ var wheel = {
                 wheel.records.push(wheel.currentSegments);
                 wheel.recordMap[wheel.currentSegments] = 1;
             }
-            viewRecords(wheel.records, wheel.groups);
+            viewRecords(wheel.currentSegments, wheel.parts + 1, wheel.colorType);
             let max = wheel.counts;
             if (max > wheel.records.length) {
                 window.setTimeout(() => wheel.startSpin(), 1000);
@@ -235,10 +244,11 @@ var wheel = {
 
     init: function (optionList) {
         try {
+            wheel.recordsBoxDOM = $('.records-box');
+            wheel.recordDOMString = $('#template-record').html().trim();
+            wheel.recordLiDOMString = $('#template-record-li').html().trim();
             wheel.initWheel();
-            // wheel.initAudio();
             wheel.initCanvas();
-            // console.log('init draw');
             wheel.draw(); // first init
 
             $.extend(wheel, optionList);
@@ -246,12 +256,6 @@ var wheel = {
             alert('Wheel is not loaded ' + exceptionData);
         }
     },
-
-    // initAudio: function () {
-    //     var sound = document.createElement('audio');
-    //     sound.setAttribute('src', '../ding.mp3');
-    //     wheel.sound = sound;
-    // },
 
     startSpin: function () {
         if (wheel.records.length !== 0) {
@@ -263,9 +267,8 @@ var wheel = {
     },
 
     initCanvas: function () {
-        wheel.canvasDom = $('#wheel #canvas').get(0);
-        // wheel.canvasDom.addEventListener('click', wheel.startSpin, false);
-        wheel.canvasContext = wheel.canvasDom.getContext('2d');
+        wheel.canvasDOM = $('#wheel #canvas').get(0);
+        wheel.canvasContext = wheel.canvasDOM.getContext('2d');
     },
 
     initWheel: function () {
@@ -289,7 +292,6 @@ var wheel = {
         for (var i = 0; i < len; i++) seg_color.push(colors[segments[i].hashCode().mod(colorLen)]);
 
         wheel.seg_color = seg_color;
-        // console.log('update draw');
         wheel.draw();
     },
 
@@ -334,10 +336,6 @@ var wheel = {
         ctx.textBaseline = 'middle';
         ctx.fillStyle = '#000000';
         ctx.font = '2rem Arial';
-        // if (!wheel.isInit && wheel.currentSegments !== wheel.segments[i]) {
-        //     // wheel.sound.play();
-        //     new Audio('../ding.mp3').play();
-        // }
         if (!wheel.isInit) {
             wheel.currentSegments = wheel.segments[i];
         }

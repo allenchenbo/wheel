@@ -21,20 +21,55 @@
                 <button class="button red-button">紅色轉盤</button>
                 <button class="button blue-button">藍色轉盤</button>
             </div>
-            <div class="wheel-box" style="display: none">
-                <h1 class="title">請設定</h1>
-                <div id="wheel">
-                    <canvas id="canvas" width="650" height="600"></canvas>
+            <div class="wrap">
+                <div class="wheel-box" style="display: none">
+                    <h1 class="title">請設定</h1>
+                    <div id="wheel">
+                        <canvas id="canvas" width="650" height="600"></canvas>
+                    </div>
+                    <button id="spin-button" class="button">開始轉動</button>
                 </div>
-                <button id="spin-button" class="button">開始轉動</button>
+                <div class="records-box">
+                    <!-- <div class="record">
+                        <h2>第<span class="px-2">1</span>輪</h2>
+                        <ul>
+                            <li class="chess chess-gold">1</li>
+                            <li class="chess chess-gold">2</li>
+                            <li class="chess chess-gold">3</li>
+                            <li class="chess chess-gold">4</li>
+                            <li class="chess chess-gold">5</li>
+                            <li class="chess chess-gold">6</li>
+                            <li class="chess chess-gold">7</li>
+                            <li class="chess chess-gold">8</li>
+                            <li class="chess chess-gold">9</li>
+                            <li class="chess chess-gold">10</li>
+                            <li class="chess chess-gold">11</li>
+                            <li class="chess chess-gold">12</li>
+                            <li class="chess chess-gold">13</li>
+                            <li class="chess chess-gold">14</li>
+                        </ul>
+                    </div> -->
+                </div>
             </div>
         </div>
         <!-- <button id="start">開始抽籤</button> -->
-        <div class="records"></div>
 
-        <div id="stats" class="stats">
+        <!-- <div id="stats" class="stats">
             <div id="counter"></div>
             <div id="RPM"></div>
+        </div> -->
+        <div style="display: none">
+            <xmp id="template-record">
+                <div class="record">
+                    <h2>第<span class="px-2">*TIMES*</span>輪</h2>
+                    <ul>
+                        *LI*
+                    </ul>
+                </div>
+            </xmp>
+            <xmp id="template-record-li">
+                <li class="chess chess-*COLOR*">*LOTTERY*</li>
+            </xmp>
         </div>
     </body>
 </html>
