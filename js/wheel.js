@@ -99,10 +99,10 @@ const setTitle = (title) => {
 };
 
 const setWheel = (eventName) => {
-    // window.onbeforeunload = function (event) {
-    //     let e = window.event || event;
-    //     e.returnValue = '確定要關閉視窗？？';
-    // };
+    window.onbeforeunload = function (event) {
+        let e = window.event || event;
+        e.returnValue = '確定要關閉視窗？？';
+    };
     const { startNum, endNum, groups, color, title } = lotteryMap[eventName];
     const spinButton = document.querySelector('#spin-button');
     wheel.venues = lotteryNum(startNum, endNum);
